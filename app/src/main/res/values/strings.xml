@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Blog</string>
+    <string name="logo_for_login_page">Logo for Login Page</string>
+    <string name="enter_your_email">Enter your Email</string>
+    <string name="enter_your_password">Enter your Password</string>
+    <string name="login_to_account">Login to Account</string>
+    <string name="registration">Join us</string>
 </resources>
