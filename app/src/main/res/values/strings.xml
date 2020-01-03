@@ -12,4 +12,6 @@
     <string name="regLoginText">Already have an Account?</string>
     <string name="regPasswordText">Enter Password</string>
     <string name="regConfirmPassword">Confirm Password</string>
+    <string name="setupNameHint">Your Name</string>
+    <string name="setupBtnNameText">Save Account Settings</string>
 </resources>
