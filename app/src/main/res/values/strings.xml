@@ -5,4 +5,11 @@
     <string name="enter_your_password">Enter your Password</string>
     <string name="login_to_account">Login to Account</string>
     <string name="registration">Join us</string>
+    <string name="actionSearchText">Search</string>
+    <string name="actionSettingText">Account Settings</string>
+    <string name="actionLogoutText">Logout</string>
+    <string name="regBtnText">Create new account</string>
+    <string name="regLoginText">Already have an Account?</string>
+    <string name="regPasswordText">Enter Password</string>
+    <string name="regConfirmPassword">Confirm Password</string>
 </resources>
