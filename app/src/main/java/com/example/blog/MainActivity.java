@@ -2,6 +2,7 @@ package com.example.blog;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private String currentUserId;
     private FloatingActionButton addPostButton;
+    private BottomNavigationView mainBottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         mainToolbar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("Photo Blog");
+
+        mainBottomNav = findViewById(R.id.mainBottomNav);
 
         addPostButton = findViewById(R.id.addPostButton);
         addPostButton.setOnClickListener(new View.OnClickListener() {

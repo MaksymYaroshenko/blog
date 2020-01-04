@@ -17,4 +17,7 @@
     <string name="title_activity_new_post">NewPostActivity</string>
     <string name="PostDescriptionHint">Add Description</string>
     <string name="newPostBtnHint">Post</string>
+    <string name="bottomHomeText">Home</string>
+    <string name="buttomNotificationText">Notification</string>
+    <string name="buttomAccontText">Account</string>
 </resources>
