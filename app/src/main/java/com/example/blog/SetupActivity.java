@@ -95,7 +95,7 @@ public class SetupActivity extends AppCompatActivity {
                 setupButton.setEnabled(true);
             }
         });
-        
+
         setupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
