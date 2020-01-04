@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private String currentUserId;
     private FloatingActionButton addPostButton;
     private BottomNavigationView mainBottomNav;
+    private HomeFragment homeFragment;
+    private NotificationFragment notificationFragment;
+    private AccountFragment accountFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,32 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Photo Blog");
 
         mainBottomNav = findViewById(R.id.mainBottomNav);
+
+        homeFragment = new HomeFragment();
+        notificationFragment = new NotificationFragment();
+        accountFragment = new AccountFragment();
+
+        mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+                switch (menuItem.getItemId()) {
+                    case R.id.bottomActionHome:
+                        replaceFragment(homeFragment);
+                        return true;
+                    case R.id.bottomActionNotification:
+                        replaceFragment(notificationFragment);
+                        return true;
+                    case R.id.bottonActionAccount:
+                        replaceFragment(accountFragment);
+                        return true;
+                    default:
+                        return false;
+                }
+
+                //return false;
+            }
+        });
 
         addPostButton = findViewById(R.id.addPostButton);
         addPostButton.setOnClickListener(new View.OnClickListener() {
@@ -110,5 +141,11 @@ public class MainActivity extends AppCompatActivity {
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(loginIntent);
         finish();
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mainContainer, fragment);
+        fragmentTransaction.commit();
     }
 }

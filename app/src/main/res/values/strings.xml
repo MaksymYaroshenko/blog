@@ -20,4 +20,7 @@
     <string name="bottomHomeText">Home</string>
     <string name="buttomNotificationText">Notification</string>
     <string name="buttomAccontText">Account</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
