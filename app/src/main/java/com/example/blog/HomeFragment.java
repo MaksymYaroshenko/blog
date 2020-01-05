@@ -87,8 +87,8 @@ public class HomeFragment extends Fragment {
                     }
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
-
-                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class);
+                            String blogPostId = doc.getDocument().getId();
+                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).whithId(blogPostId);
                             if (isFirstPageFirstLoad) {
                                 blogList.add(blogPost);
                             } else {
@@ -117,8 +117,8 @@ public class HomeFragment extends Fragment {
                     lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
-
-                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class);
+                            String blogPostId = doc.getDocument().getId();
+                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).whithId(blogPostId);
                             blogList.add(blogPost);
                             blogRecyclerAdapter.notifyDataSetChanged();
                         }

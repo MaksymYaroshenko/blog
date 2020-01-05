@@ -15,12 +15,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -29,6 +33,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     private List<BlogPost> blogList;
     public Context context;
     private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
 
     public BlogRecyclerAdapter(List<BlogPost> blogList) {
         this.blogList = blogList;
@@ -40,19 +45,23 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.blog_list_item, viewGroup, false);
         context = viewGroup.getContext();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
+        final String blogPostId = blogList.get(i).BlogPostId;
+        final String currentUserId = firebaseAuth.getCurrentUser().getUid();
+
         String descData = blogList.get(i).getDesc();
         viewHolder.setDescText(descData);
 
         String imageUrl = blogList.get(i).getImage_url();
-        viewHolder.setBlogImage(imageUrl);
+        String thumbUri = blogList.get(i).getImage_thumb();
+        viewHolder.setBlogImage(imageUrl, thumbUri);
 
         String userId = blogList.get(i).getUser_id();
-        // user data
         firebaseFirestore.collection("Users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -70,6 +79,15 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         long millisecond = blogList.get(i).getTimestamp().getTime();
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(millisecond)).toString();
         viewHolder.setTime(dateString);
+
+        viewHolder.blogLikeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> likesMap = new HashMap<>();
+                likesMap.put("timestamp", FieldValue.serverTimestamp());
+                firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).set(likesMap);
+            }
+        });
     }
 
     @Override
@@ -85,6 +103,8 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         private TextView blogDate;
         private TextView blogUserName;
         private CircleImageView blogUserImage;
+        private ImageView blogLikeButton;
+        private TextView blogLikeCount;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,13 +114,15 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         public void setDescText(String text) {
             descView = mView.findViewById(R.id.blogDescription);
             descView.setText(text);
+
+            blogLikeButton = mView.findViewById(R.id.blogLikeBtn);
         }
 
-        public void setBlogImage(String downloadImage) {
+        public void setBlogImage(String downloadImage, String thumbUri) {
             blogImageView = mView.findViewById(R.id.blogImage);
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.image_placeholder);
-            Glide.with(context).applyDefaultRequestOptions(requestOptions).load(downloadImage).into(blogImageView);
+            Glide.with(context).applyDefaultRequestOptions(requestOptions).load(downloadImage).thumbnail(Glide.with(context).load(thumbUri)).into(blogImageView);
         }
 
         public void setTime(String date) {
