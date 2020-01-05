@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment {
     private BlogRecyclerAdapter blogRecyclerAdapter;
     private FirebaseAuth firebaseAuth;
     private DocumentSnapshot lastVisible;
+    private Boolean isFirstPageFirstLoad = true;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -77,19 +78,27 @@ public class HomeFragment extends Fragment {
             });
 
             Query nextQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
-            nextQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            nextQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
 
-                    lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
+                    if (isFirstPageFirstLoad) {
+                        lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
+                    }
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
-
-                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class);
-                            blogList.add(blogPost);
+                            String blogPostId = doc.getDocument().getId();
+                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).whithId(blogPostId);
+                            if (isFirstPageFirstLoad) {
+                                blogList.add(blogPost);
+                            } else {
+                                blogList.add(0, blogPost);
+                            }
                             blogRecyclerAdapter.notifyDataSetChanged();
                         }
                     }
+
+                    isFirstPageFirstLoad = false;
                 }
             });
         }
@@ -101,15 +110,15 @@ public class HomeFragment extends Fragment {
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .startAfter(lastVisible)
                 .limit(3);
-        nextQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        nextQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (!queryDocumentSnapshots.isEmpty()) {
                     lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
-
-                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class);
+                            String blogPostId = doc.getDocument().getId();
+                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).whithId(blogPostId);
                             blogList.add(blogPost);
                             blogRecyclerAdapter.notifyDataSetChanged();
                         }
