@@ -45,40 +45,44 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mainToolbar);
         getSupportActionBar().setTitle("Photo Blog");
 
-        mainBottomNav = findViewById(R.id.mainBottomNav);
+        if (mAuth.getCurrentUser() != null) {
+            mainBottomNav = findViewById(R.id.mainBottomNav);
 
-        homeFragment = new HomeFragment();
-        notificationFragment = new NotificationFragment();
-        accountFragment = new AccountFragment();
+            homeFragment = new HomeFragment();
+            notificationFragment = new NotificationFragment();
+            accountFragment = new AccountFragment();
 
-        mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            replaceFragment(homeFragment);
 
-                switch (menuItem.getItemId()) {
-                    case R.id.bottomActionHome:
-                        replaceFragment(homeFragment);
-                        return true;
-                    case R.id.bottomActionNotification:
-                        replaceFragment(notificationFragment);
-                        return true;
-                    case R.id.bottonActionAccount:
-                        replaceFragment(accountFragment);
-                        return true;
-                    default:
-                        return false;
+            mainBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+                    switch (menuItem.getItemId()) {
+                        case R.id.bottomActionHome:
+                            replaceFragment(homeFragment);
+                            return true;
+                        case R.id.bottomActionNotification:
+                            replaceFragment(notificationFragment);
+                            return true;
+                        case R.id.bottonActionAccount:
+                            replaceFragment(accountFragment);
+                            return true;
+                        default:
+                            return false;
+                    }
                 }
-            }
-        });
+            });
 
-        addPostButton = findViewById(R.id.addPostButton);
-        addPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newPostIntent = new Intent(MainActivity.this, NewPostActivity.class);
-                startActivity(newPostIntent);
-            }
-        });
+            addPostButton = findViewById(R.id.addPostButton);
+            addPostButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent newPostIntent = new Intent(MainActivity.this, NewPostActivity.class);
+                    startActivity(newPostIntent);
+                }
+            });
+        }
 
     }
 
