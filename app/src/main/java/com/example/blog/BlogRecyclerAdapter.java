@@ -17,14 +17,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -51,6 +56,8 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
+        viewHolder.setIsRecyclable(false);
+
         final String blogPostId = blogList.get(i).BlogPostId;
         final String currentUserId = firebaseAuth.getCurrentUser().getUid();
 
@@ -80,12 +87,46 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         String dateString = DateFormat.format("MM/dd/yyyy", new Date(millisecond)).toString();
         viewHolder.setTime(dateString);
 
+        firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (!documentSnapshot.isEmpty()) {
+                    int count = documentSnapshot.size();
+                    viewHolder.updateLikesCount(count);
+                } else {
+                    viewHolder.updateLikesCount(0);
+                }
+            }
+
+        });
+
+        firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (documentSnapshot.exists()) {
+                    viewHolder.blogLikeButton.setImageDrawable(context.getDrawable(R.mipmap.action_like_accept));
+                } else {
+                    viewHolder.blogLikeButton.setImageDrawable(context.getDrawable(R.mipmap.action_like_gray));
+                }
+            }
+        });
+
         viewHolder.blogLikeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String, Object> likesMap = new HashMap<>();
-                likesMap.put("timestamp", FieldValue.serverTimestamp());
-                firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).set(likesMap);
+                firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (!task.getResult().exists()) {
+                            Map<String, Object> likesMap = new HashMap<>();
+                            likesMap.put("timestamp", FieldValue.serverTimestamp());
+                            firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).set(likesMap);
+                        } else {
+                            firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).delete();
+                        }
+                    }
+                });
+
             }
         });
     }
@@ -138,6 +179,11 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             placeholderOption.placeholder(R.drawable.profile_placeholder);
             Glide.with(context).applyDefaultRequestOptions(placeholderOption).load(image).into(blogUserImage);
             blogUserName.setText(name);
+        }
+
+        public void updateLikesCount(int count) {
+            blogLikeCount = mView.findViewById(R.id.blogLikeCount);
+            blogLikeCount.setText(count + " Likes");
         }
     }
 }
