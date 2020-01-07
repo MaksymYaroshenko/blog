@@ -8,6 +8,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -58,7 +60,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         viewHolder.setIsRecyclable(false);
 
         final String blogPostId = blogList.get(i).BlogPostId;
@@ -72,6 +74,11 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         viewHolder.setBlogImage(imageUrl, thumbUri);
 
         String userId = blogList.get(i).getUser_id();
+
+        if(userId.equals(currentUserId)){
+            viewHolder.blogDeleteButton.setEnabled(true);
+            viewHolder.blogDeleteButton.setVisibility(View.VISIBLE);
+        }
 
         firebaseFirestore.collection("Users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -157,6 +164,19 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                 context.startActivity(commentIntent);
             }
         });
+
+        viewHolder.blogDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firebaseFirestore.collection("Posts").document(blogPostId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        blogList.remove(i);
+                        userList.remove(i);
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -176,6 +196,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         private TextView blogLikeCount;
         private ImageView blogCommentBtn;
         private TextView blogCommentCount;
+        private Button blogDeleteButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -183,6 +204,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
             blogLikeButton = mView.findViewById(R.id.blogLikeBtn);
             blogCommentBtn = mView.findViewById(R.id.blogCommentsBtn);
+            blogDeleteButton = mView.findViewById(R.id.blogDeleteBtn);
         }
 
         public void setDescText(String text) {
