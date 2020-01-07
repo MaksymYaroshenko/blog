@@ -42,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         registrationButton = (Button) findViewById(R.id.regBtn);
         registrationLoginButton = (Button) findViewById(R.id.loginRegestrationBtn);
         registrationProgressBar = (ProgressBar) findViewById(R.id.regProgressBar);
+        registrationLoginButton = findViewById(R.id.regLoginBtn);
 
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +75,15 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, "Confirm Password and Password are different", Toast.LENGTH_LONG).show();
                     }
                 }
+            }
+        });
+
+        registrationLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent setupIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(setupIntent);
+                finish();
             }
         });
     }
