@@ -25,4 +25,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="blog_post_date">Blog Post Date</string>
     <string name="commentLabelTitle">Coments:</string>
+    <string name="deleteButtonTitle">Delete</string>
+    <string name="usernameFieldTitle">Username</string>
+    <string name="postTextField">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum</string>
+    <string name="likesCountField">0 Likes</string>
+    <string name="commentsCountField">0 Comments</string>
 </resources>
