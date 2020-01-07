@@ -28,7 +28,7 @@
                 android:id="@+id/blogLikeBtn"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -70,7 +70,7 @@
             <ImageView
                 android:id="@+id/blogImage"
                 android:layout_width="0dp"
-                android:layout_height="200dp"
+                android:layout_height="250dp"
                 android:layout_marginTop="24dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -101,6 +101,30 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/blogLikeBtn"
                 app:layout_constraintTop_toBottomOf="@+id/blogDescription" />
+
+            <TextView
+                android:id="@+id/blogCommentsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="0 Comments"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/blogDescription" />
+
+            <ImageView
+                android:id="@+id/blogCommentsBtn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/blogCommentsCount"
+                app:layout_constraintTop_toBottomOf="@+id/blogDescription"
+                app:srcCompat="@mipmap/action_comments" />
 
         </android.support.constraint.ConstraintLayout>
 
