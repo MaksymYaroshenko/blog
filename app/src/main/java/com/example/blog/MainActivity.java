@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addPostButton;
     private BottomNavigationView mainBottomNav;
     private HomeFragment homeFragment;
-    private NotificationFragment notificationFragment;
     private AccountFragment accountFragment;
 
     @Override
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
             mainBottomNav = findViewById(R.id.mainBottomNav);
 
             homeFragment = new HomeFragment();
-            notificationFragment = new NotificationFragment();
             accountFragment = new AccountFragment();
 
             replaceFragment(homeFragment);
@@ -61,9 +59,6 @@ public class MainActivity extends AppCompatActivity {
                     switch (menuItem.getItemId()) {
                         case R.id.bottomActionHome:
                             replaceFragment(homeFragment);
-                            return true;
-                        case R.id.bottomActionNotification:
-                            replaceFragment(notificationFragment);
                             return true;
                         case R.id.bottonActionAccount:
                             replaceFragment(accountFragment);
