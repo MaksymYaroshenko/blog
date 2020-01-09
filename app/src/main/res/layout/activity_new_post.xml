@@ -52,7 +52,7 @@
         android:padding="16dp"
         android:text="@string/newPostBtnHint"
         android:textAllCaps="false"
-        android:textColor="@android:color/white"
+        android:textColor="@color/design_default_color_primary"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
