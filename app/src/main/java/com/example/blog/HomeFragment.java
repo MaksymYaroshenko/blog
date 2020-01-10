@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
         if (firebaseAuth.getCurrentUser() != null) {
             firebaseFirestore = FirebaseFirestore.getInstance();
 
-            Query nextQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);//.limit(3);
+            Query nextQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
             nextQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -72,17 +72,15 @@ public class HomeFragment extends Fragment {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
                             String blogPostId = doc.getDocument().getId();
                             final BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).whithId(blogPostId);
+                            blogList.add(blogPost);
+                            blogRecyclerAdapter.notifyDataSetChanged();
 
                             firebaseFirestore.collection("Users").document(blogPostId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()) {
                                         User user = task.getResult().toObject(User.class);
-
-                                            userList.add(user);
-                                            blogList.add(blogPost);
-
-                                        blogRecyclerAdapter.notifyDataSetChanged();
+                                        userList.add(user);
                                     }
                                 }
                             });
