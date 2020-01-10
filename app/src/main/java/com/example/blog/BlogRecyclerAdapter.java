@@ -75,7 +75,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
         String userId = blogList.get(i).getUser_id();
 
-        if(userId.equals(currentUserId)){
+        if (userId.equals(currentUserId)) {
             viewHolder.blogDeleteButton.setEnabled(true);
             viewHolder.blogDeleteButton.setVisibility(View.VISIBLE);
         }
@@ -102,12 +102,13 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (!documentSnapshot.isEmpty()) {
-                    int count = documentSnapshot.size();
-                    viewHolder.updateLikesCount(count);
-                } else {
-                    viewHolder.updateLikesCount(0);
-                }
+                if (documentSnapshot == null) return;
+                    if (!documentSnapshot.isEmpty()) {
+                        int count = documentSnapshot.size();
+                        viewHolder.updateLikesCount(count);
+                    } else {
+                        viewHolder.updateLikesCount(0);
+                    }
             }
 
         });
@@ -129,6 +130,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (documentSnapshot == null) return;
                 if (documentSnapshot.exists()) {
                     viewHolder.blogLikeButton.setImageDrawable(context.getDrawable(R.mipmap.action_like_accept));
                 } else {
